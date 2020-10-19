@@ -20,7 +20,7 @@ class CronTranslator
     protected $currentObject    = null;
     protected $translation      = null;
     
-    /** CronTranslator::translate() */
+    /** CronTranslator::translate()*/
     public static function translate($cron)
     {
         if (isset(self::$extendedMap[$cron])) {
@@ -28,7 +28,7 @@ class CronTranslator
         }
         try {
             return self::parseFields($cron)->getTranslation();
-        } catch (\Exception $th) {
+        } catch (\Throwable $th) {
             throw new \Exception($th);
         }
     }
@@ -61,20 +61,17 @@ class CronTranslator
     protected function generateTranslation()
     {
         $onces                      = $this->filterType('Once');
-        $everys                     = $this->filterType($fields, 'Every');
-        $incrementsAndMultiples     = $this->filterType($fields, 'Increment', 'Multiple');
-        $firstEvery                 = (reset($everys)->position) ? reset($everys)->position->position : PHP_INT_MIN;
+        $everys                     = $this->filterType('Every');
+        $incrementsAndMultiples     = $this->filterType('Increment', 'Multiple');
+        $firstEvery                 = (reset($everys)->position) ? reset($everys)->position : PHP_INT_MIN;
         $firstIncrementOrMultiple   = (reset($incrementsAndMultiples)->position) ? reset($incrementsAndMultiples)->position : PHP_INT_MAX;
         $numberOfEverysKept         = $firstIncrementOrMultiple < $firstEvery ? 0 : 1;
         foreach (array_slice($everys, $numberOfEverysKept) as $field) {
             $field->dropped = true;
         }
-        $this->parsedFields = null;
-        foreach(array_merge(array_slice($everys, 0, $numberOfEverysKept),$incrementsAndMultiples,array_reverse($onces)) as $fieldIndex => $fieldData){
-            $this->parsedFields->{$fieldIndex} = $fieldData;
-        }
+        
         $translations = [];
-        foreach($this->parsedFields as $fieldIndex => $fieldData){
+        foreach(array_merge(array_slice($everys, 0, $numberOfEverysKept),$incrementsAndMultiples,array_reverse($onces)) as $fieldIndex => $fieldData){
             $this->currentType      = $fieldIndex;
             $this->currentObject    = $fieldData;
             $translations[]         = $this->{"translate{$fieldData->type}"}();
@@ -99,7 +96,7 @@ class CronTranslator
         return $return;
     }
     
-    /** CronTranslator::translateEvery()*/
+    /** CronTranslator::translateEvery() */
     protected function translateEvery()
     {
         switch($this->currentType){
@@ -123,7 +120,7 @@ class CronTranslator
         }
     }
     
-    /** CronTranslator::translateIncrement()*/
+    /** CronTranslator::translateIncrement() */
     protected function translateIncrement()
     {
         switch($this->currentType){
@@ -153,7 +150,7 @@ class CronTranslator
         }
     }
     
-    /** CronTranslator::translateMultiple() */
+    /** CronTranslator::translateMultiple()*/
     protected function translateMultiple()
     {
         switch($this->currentType){
@@ -177,7 +174,7 @@ class CronTranslator
         }
     }
     
-    /** CronTranslator::translateOnce() */
+    /** CronTranslator::translateOnce()*/
     protected function translateOnce()
     {
         switch($this->currentType){
