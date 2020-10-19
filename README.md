@@ -11,7 +11,7 @@ composer require sapistudio/cron-translator
 ## Usage
 
 ```php
-use Lorisleiva\CronTranslator\CronTranslator;
+use SapiStudio\CronTranslator\CronTranslator;
 
 CronTranslator::translate('* * * * *');       // => Every minute
 CronTranslator::translate('30 22 * * *');     // => Every day at 10:30pm
