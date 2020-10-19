@@ -1,5 +1,4 @@
 <?php
-
 namespace SapiStudio\CronTranslator;
 
 class CronTranslator
@@ -21,6 +20,7 @@ class CronTranslator
     protected $currentObject    = null;
     protected $translation      = null;
     
+    /** CronTranslator::translate() */
     public static function translate($cron)
     {
         if (isset(self::$extendedMap[$cron])) {
@@ -28,20 +28,23 @@ class CronTranslator
         }
         try {
             return self::parseFields($cron)->getTranslation();
-        } catch (\Throwable $th) {
+        } catch (\Exception $th) {
             throw new \Exception($th);
         }
     }
     
+    /** CronTranslator::getTranslation()*/
     public function getTranslation(){
         return $this->translation;
     }
     
+    /** CronTranslator::parseFields()*/
     protected static function parseFields($cron)
     {
         return new static($cron);
     }
     
+    /** CronTranslator::__construct()*/
     protected function __construct($expression)
     {
         $this->expression   = $expression;
@@ -54,6 +57,7 @@ class CronTranslator
         return $this->generateTranslation();
     }
     
+    /** CronTranslator::generateTranslation()*/
     protected function generateTranslation()
     {
         $onces                      = $this->filterType('Once');
@@ -80,12 +84,14 @@ class CronTranslator
         return $this;
     }
     
+    /** CronTranslator::filterType()*/
     protected function filterType(...$types)
     {
         $fields = $this->getFieldsAsArray();
         return array_filter($fields, function ($field) use ($types) {return $field->hasType(...$types);});
     }
     
+    /** CronTranslator::getFieldsAsArray() */
     protected function getFieldsAsArray()
     {
         foreach($this->fieldTypes as $index)
@@ -93,6 +99,7 @@ class CronTranslator
         return $return;
     }
     
+    /** CronTranslator::translateEvery()*/
     protected function translateEvery()
     {
         switch($this->currentType){
@@ -116,6 +123,7 @@ class CronTranslator
         }
     }
     
+    /** CronTranslator::translateIncrement()*/
     protected function translateIncrement()
     {
         switch($this->currentType){
@@ -145,6 +153,7 @@ class CronTranslator
         }
     }
     
+    /** CronTranslator::translateMultiple() */
     protected function translateMultiple()
     {
         switch($this->currentType){
@@ -168,6 +177,7 @@ class CronTranslator
         }
     }
     
+    /** CronTranslator::translateOnce() */
     protected function translateOnce()
     {
         switch($this->currentType){
@@ -199,6 +209,7 @@ class CronTranslator
         }
     }
 
+    /** CronTranslator::times()*/
     protected function times($count)
     {
         switch ($count) {
