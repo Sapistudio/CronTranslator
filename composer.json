@@ -1,0 +1,12 @@
+{
+    "name": "sapistudio/cron-translator",
+    "description": "Makes CRON expressions human-readable",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SapiStudio\\CronTranslator\\": "src"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
